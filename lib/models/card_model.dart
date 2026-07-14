@@ -1,0 +1,34 @@
+class CardModel {
+  final String id;
+  final String name;
+  final String netCharge;
+  final String units;
+  final String duration;
+  final String productId;
+
+  CardModel({
+    required this.id,
+    required this.name,
+    required this.netCharge,
+    required this.units,
+    required this.duration,
+    required this.productId,
+  });
+
+  static List<CardModel> getAll() => [
+    CardModel(id: '1',  name: 'فكة 2.5',  netCharge: '2.50',  units: '45 وحدة',         duration: 'يوم واحد',  productId: 'Fakka_2.5_Unite'),
+    CardModel(id: '2',  name: 'فكة 3',    netCharge: '3.00',  units: '125 وحدة',        duration: 'يوم واحد',  productId: 'Fakka_3_Unite'),
+    CardModel(id: '3',  name: 'فكة 4.25', netCharge: '4.25',  units: '190 وحدة',        duration: 'يوم واحد',  productId: 'Fakka_4.25_Unite'),
+    CardModel(id: '4',  name: 'فكة 5',    netCharge: '5.00',  units: '225 وحدة',        duration: 'يوم واحد',  productId: 'Fakka_5_Unite'),
+    CardModel(id: '5',  name: 'فكة 7',    netCharge: '7.00',  units: '300 وحدة',        duration: '3 أيام',    productId: 'Fakka_7_Unite'),
+    CardModel(id: '6',  name: 'فكة 9',    netCharge: '9.00',  units: '400 وحدة',        duration: '4 أيام',    productId: 'Fakka_9_Unite'),
+    CardModel(id: '7',  name: 'فكة 10',   netCharge: '10.00', units: '300 وحدة',        duration: '2 أيام',    productId: 'Fakka_10_Unite'),
+    CardModel(id: '8',  name: 'فكة 10.5', netCharge: '10.50', units: '400 وحدة + 50MB', duration: '7 أيام',    productId: 'Fakka_10.5_Unite'),
+    CardModel(id: '9',  name: 'فكة 12',   netCharge: '12.00', units: '425 وحدة',        duration: '6 أيام',    productId: 'Fakka_12_Unite'),
+    CardModel(id: '10', name: 'فكة 13.5', netCharge: '13.50', units: '625 وحدة',        duration: '7 أيام',    productId: 'Fakka_13.5_Unite'),
+    CardModel(id: '11', name: 'فكة 15',   netCharge: '15.00', units: '550 وحدة',        duration: '7 أيام',    productId: 'Fakka_15_Unite'),
+    CardModel(id: '12', name: 'فكة 15.5', netCharge: '15.50', units: '625 وحدة',        duration: '7 أيام',    productId: 'Fakka_15.5_Unite'),
+    CardModel(id: '13', name: 'فكة 17.5', netCharge: '17.50', units: '650 وحدة',        duration: '10 أيام',   productId: 'Fakka_17.5_Unite'),
+    CardModel(id: '14', name: 'فكة 20',   netCharge: '20.00', units: '750 وحدة',        duration: '10 أيام',   productId: 'Fakka_20_Unite'),
+  ];
+}
