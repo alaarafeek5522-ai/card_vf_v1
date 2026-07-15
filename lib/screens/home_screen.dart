@@ -3,8 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/card_model.dart';
-import '../services/vodafone_service.dart';
-import '../services/balance_service.dart';
 import '../theme/app_theme.dart';
 import 'charge_screen.dart';
 import 'history_screen.dart';
@@ -23,18 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    if (mounted) setState(() => _isLoading = false);
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
   }
 
   List<CardModel> get _filtered => _cards
       .where((c) => c.name.contains(_search) || c.netCharge.contains(_search))
       .toList();
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 160,
+            expandedHeight: 140,
             pinned: true,
             backgroundColor: AppTheme.white,
             surfaceTintColor: Colors.transparent,
@@ -62,7 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               IconButton(
                 icon: const Icon(Icons.whatsapp_rounded, color: Color(0xFF25D366)),
-                onPressed: () => launchUrl(Uri.parse('https://wa.me/+201143172355'), mode: LaunchMode.externalApplication),
+                onPressed: () => launchUrl(Uri.parse('https://wa.me/+201143172355'),
+                    mode: LaunchMode.externalApplication),
               ),
             ],
           ),
@@ -81,9 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                   focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14),
                       borderSide: const BorderSide(color: AppTheme.redVF, width: 1.5)),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(color: AppTheme.lightGrey)),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
             ),
@@ -122,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, mainAxisSpacing: 12, crossAxisSpacing: 12, childAspectRatio: 0.95),
                 delegate: SliverChildBuilderDelegate(
-                  (ctx, i) => _CardTile(card: _filtered[i], stars: _stars)
+                  (ctx, i) => _CardTile(card: _filtered[i])
                       .animate()
                       .fadeIn(delay: (i * 30).ms, duration: 300.ms)
                       .scale(begin: const Offset(0.9, 0.9)),
@@ -179,10 +174,6 @@ class _AppBarBg extends StatelessWidget {
           child: Container(width: 180, height: 180,
             decoration: BoxDecoration(shape: BoxShape.circle,
               color: AppTheme.redVF.withOpacity(0.05)))),
-        Positioned(bottom: -20, left: 20,
-          child: Container(width: 100, height: 100,
-            decoration: BoxDecoration(shape: BoxShape.circle,
-              color: AppTheme.starColor.withOpacity(0.06)))),
         Align(
           alignment: Alignment.center,
           child: Padding(
@@ -212,34 +203,15 @@ class _CardTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Container(
-                  width: 44, height: 44,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppTheme.redVF.withOpacity(0.08),
-                    border: Border.all(color: AppTheme.redVF.withOpacity(0.2), width: 1.5)),
-                  padding: const EdgeInsets.all(6),
-                  child: Image.asset('assets/images/app_icon.png', fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Icon(Icons.credit_card, color: AppTheme.redVF, size: 22))),
-                // نجمة واحدة في اليمين
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: hasStars ? AppTheme.starColor.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: hasStars ? AppTheme.starColor.withOpacity(0.3) : Colors.grey.withOpacity(0.2)),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Icon(Icons.star_rounded, color: AppTheme.starColor, size: 14),
-                    const SizedBox(width: 2),
-                    Text('1', style: GoogleFonts.cairo(
-                      color: AppTheme.starColor,
-                      fontSize: 11, fontWeight: FontWeight.bold)),
-                  ]),
-                ),
-              ]),
+              Container(
+                width: 44, height: 44,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: AppTheme.redVF.withOpacity(0.08),
+                  border: Border.all(color: AppTheme.redVF.withOpacity(0.2), width: 1.5)),
+                padding: const EdgeInsets.all(6),
+                child: Image.asset('assets/images/app_icon.png', fit: BoxFit.contain,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.credit_card, color: AppTheme.redVF, size: 22))),
 
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(card.name,
@@ -247,7 +219,7 @@ class _CardTile extends StatelessWidget {
                   maxLines: 1, overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 2),
                 Row(children: [
-                  Icon(Icons.bolt, color: AppTheme.starColor, size: 12),
+                  const Icon(Icons.bolt, color: Colors.amber, size: 12),
                   const SizedBox(width: 2),
                   Expanded(child: Text(card.units,
                     style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 10),
@@ -261,9 +233,8 @@ class _CardTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppTheme.redVF,
                   borderRadius: BorderRadius.circular(10),
-                  boxShadow: [BoxShadow(color: AppTheme.redVF.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 3))],
-                ),
-                child: Text('\${card.netCharge} ج',
+                  boxShadow: [BoxShadow(color: AppTheme.redVF.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 3))]),
+                child: Text('${card.netCharge} ج',
                   style: GoogleFonts.cairo(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
                   textAlign: TextAlign.center)),
             ],
@@ -298,20 +269,15 @@ class _SkeletonCardState extends State<_SkeletonCard>
       builder: (_, __) => Container(
         decoration: BoxDecoration(
           color: AppTheme.lightGrey.withOpacity(_anim.value),
-          borderRadius: BorderRadius.circular(16),
-        ),
+          borderRadius: BorderRadius.circular(16)),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Container(width: 44, height: 44,
-                  decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(12))),
-                Container(width: 36, height: 22,
-                  decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(10))),
-              ]),
+              Container(width: 44, height: 44,
+                decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(12))),
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Container(width: 80, height: 12,
                   decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(6))),
