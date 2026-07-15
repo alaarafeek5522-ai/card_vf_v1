@@ -36,7 +36,7 @@ jobs:
         run: flutter pub get
 
       - name: Create android folder
-        run: flutter create --platforms android .
+        run: flutter create --platforms android --org com.ahmed --project-name vodafone_card .
 
       - name: Add permissions to AndroidManifest
         run: |
