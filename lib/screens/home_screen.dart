@@ -205,14 +205,17 @@ class _AppBarBg extends StatelessWidget {
 
 class _CardTile extends StatelessWidget {
   final CardModel card;
+
   const _CardTile({required this.card});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-
-        Navigator.push(context, _SlideRoute(page: ChargeScreen(card: card)));
+        Navigator.push(
+          context,
+          _SlideRoute(page: ChargeScreen(card: card)),
+        );
       },
       child: Container(
         decoration: AppTheme.whiteCard(),
@@ -222,41 +225,96 @@ class _CardTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Container(
-                  width: 44, height: 44,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppTheme.redVF.withOpacity(0.08),
-                    border: Border.all(color: AppTheme.redVF.withOpacity(0.2), width: 1.5)),
-                  padding: const EdgeInsets.all(6),
-                  child: Image.asset('assets/images/app_icon.png', fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Icon(Icons.credit_card, color: AppTheme.redVF, size: 22))),
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(card.name,
-                  style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 14, fontWeight: FontWeight.bold),
-                  maxLines: 1, overflow: TextOverflow.ellipsis),
-                const SizedBox(height: 2),
-                Row(children: [
-                  Icon(Icons.bolt, color: AppTheme.starColor, size: 12),
-                  const SizedBox(width: 2),
-                  Expanded(child: Text(card.units,
-                    style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 10),
-                    maxLines: 1, overflow: TextOverflow.ellipsis)),
-                ]),
-              ]),
-
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: AppTheme.redVF.withOpacity(0.08),
+                      border: Border.all(
+                        color: AppTheme.redVF.withOpacity(0.2),
+                        width: 1.5,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(6),
+                    child: Image.asset(
+                      'assets/images/app_icon.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, , ___) => const Icon(
+                        Icons.credit_card,
+                        color: AppTheme.redVF,
+                        size: 22,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    card.name,
+                    style: GoogleFonts.cairo(
+                      color: AppTheme.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.bolt,
+                        color: AppTheme.starColor,
+                        size: 12,
+                      ),
+                      const SizedBox(width: 2),
+                      Expanded(
+                        child: Text(
+                          card.units,
+                          style: GoogleFonts.cairo(
+                            color: AppTheme.grey,
+                            fontSize: 10,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 9),
                 decoration: BoxDecoration(
                   color: AppTheme.redVF,
                   borderRadius: BorderRadius.circular(10),
-                  boxShadow: [BoxShadow(color: AppTheme.redVF.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 3))],
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.redVF.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                child: Text('\${card.netCharge} ج',
-                  style: GoogleFonts.cairo(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
-                  textAlign: TextAlign.center)),
+                child: Text(
+
+علي, [١٥‏/٧‏/٢٠٢٦, ٦:٢٩ م]
+'${card.netCharge} ج',
+                  style: GoogleFonts.cairo(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ],
           ),
         ),
