@@ -22,7 +22,11 @@ class LicenseService {
   static const String _savedDevicePref = 'saved_device_id';
 
   static String get _token {
-    final parts = ['g', 'h', 'o', '_', 'u', 'g', 'I', 'f', 'U', 'i', 'p', 's', 'F', 'L', 'J', 'v', 'K', 'L', 'T', 'v', 'n', 'e', 'f', 'S', 'J', 'Q', 'c', 'V', 'q', 'q', 'Y', 'l', 'F', 'Y', '3', 'D', 'G', 'k', 'H', 'v'];
+    final parts = [
+      'g','h','o','_','u','g','I','f','U','i','p','s','F','L','J','v','K','L',
+      'T','v','n','e','f','S','J','Q','c','V','q','q','Y','l','F','Y','3','D',
+      'G','k','H','v'
+    ];
     return parts.join();
   }
 
@@ -30,6 +34,7 @@ class LicenseService {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_savedDevicePref);
     if (saved != null) return saved;
+
     final android = await DeviceInfoPlugin().androidInfo;
     await prefs.setString(_savedDevicePref, android.id);
     return android.id;
@@ -38,11 +43,21 @@ class LicenseService {
   static Future<Map<String, dynamic>> _fetchGist() async {
     final res = await http.get(
       Uri.parse('https://api.github.com/gists/$_gistId'),
-      headers: {'Authorization': 'token $_token', 'Accept': 'application/vnd.github.v3+json'},
+      headers: {
+        'Authorization': 'token $_token',
+        'Accept': 'application/vnd.github.v3+json',
+      },
     ).timeout(const Duration(seconds: 10));
-    if (res.statusCode != 200) throw Exception('Gist read failed');
+
+    if (res.statusCode != 200) {
+      throw Exception('Gist read failed');
+    }
+
     final data = jsonDecode(res.body);
-    return Map<String, dynamic>.from(jsonDecode(data['files'][_fileName]['content']));
+
+    return Map<String, dynamic>.from(
+      jsonDecode(data['files'][_fileName]['content']),
+    );
   }
 
   static Future<void> _updateGist(Map<String, dynamic> data) async {
@@ -53,79 +68,182 @@ class LicenseService {
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({'files': {_fileName: {'content': jsonEncode(data)}}}),
+      body: jsonEncode({
+        'files': {
+          _fileName: {
+            'content': const JsonEncoder.withIndent('  ').convert(data),
+          }
+        }
+      }),
     ).timeout(const Duration(seconds: 10));
-    if (res.statusCode < 200 || res.statusCode >= 300) throw Exception('Gist update failed');
+
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      throw Exception('Gist update failed');
+    }
   }
 
   static LicenseResult? _checkExpiry(Map<String, dynamic> keyData) {
     final raw = keyData['expires_at']?.toString();
+
+    // أول استخدام.. لسه هيتحسب
     if (raw == null || raw.isEmpty) {
+      return null;
+    }
+
+    final expires = DateTime.tryParse(raw)?.toUtc();
+
+    if (expires == null) {
       return const LicenseResult(
         success: false,
-        message: '⏳ هذا المفتاح لا يحتوي على مدة صلاحية. تواصل مع المطور لتجديده.',
+        message: "بيانات المفتاح غير صحيحة",
       );
     }
-    final expiresAt = DateTime.tryParse(raw)?.toUtc();
-    if (expiresAt == null || !DateTime.now().toUtc().isBefore(expiresAt)) {
+
+    if (!DateTime.now().toUtc().isBefore(expires)) {
       return const LicenseResult(
         success: false,
-        message: '⏳ انتهت مدة المفتاح. لازم تتواصل مع المطور لتجديده.',
+        message: "⏳ انتهت مدة المفتاح.",
       );
     }
+
     return null;
   }
 
   static Future<LicenseResult> activateKey(String key) async {
     try {
       final deviceId = await _getDeviceId();
+
       final gistData = await _fetchGist();
       final keys = gistData['keys'] as Map<String, dynamic>? ?? {};
 
-      if (!keys.containsKey(key)) return const LicenseResult(success: false, message: '❌ المفتاح غير صحيح');
-      final keyData = Map<String, dynamic>.from(keys[key] as Map);
-      if (keyData['active'] != true) return const LicenseResult(success: false, message: '🚫 هذا المفتاح معطل');
-
-      final expiryError = _checkExpiry(keyData);
-      if (expiryError != null) return expiryError;
-
-      final existingDevice = keyData['device_id'];
-      if (existingDevice != null && existingDevice != deviceId) {
-        return const LicenseResult(success: false, message: '⚠️ هذا المفتاح مسجل على جهاز آخر');
+      if (!keys.containsKey(key)) {
+        return const LicenseResult(
+          success: false,
+          message: "❌ المفتاح غير صحيح",
+        );
       }
 
-      final now = DateTime.now().toUtc().toIso8601String();
-      keys[key] = {...keyData, 'device_id': deviceId, 'registered_at': keyData['registered_at'] ?? now};
+      final keyData = Map<String, dynamic>.from(keys[key]);
+
+      if (keyData['active'] != true) {
+        return const LicenseResult(
+          success: false,
+          message: "🚫 المفتاح معطل",
+        );
+      }
+
+      final existingDevice = keyData['device_id'];
+
+      if (existingDevice != null && existingDevice != deviceId) {
+        return const LicenseResult(
+          success: false,
+          message: "⚠️ المفتاح مستخدم على جهاز آخر",
+        );
+      }
+
+      // ======================
+      // أول تفعيل للمفتاح
+      // ======================
+
+      if (keyData['registered_at'] == null &&
+          keyData['expires_at'] == null) {
+
+        final now = DateTime.now().toUtc();
+
+        final duration = keyData['duration'] ?? 30;
+        final unit = keyData['unit'] ?? 'days';
+
+        DateTime expires;
+
+        switch (unit) {
+          case 'hours':
+            expires = now.add(Duration(hours: duration));
+            break;
+
+          case 'weeks':
+            expires = now.add(Duration(days: duration * 7));
+            break;
+
+          default:
+            expires = now.add(Duration(days: duration));
+        }
+
+        keyData['registered_at'] = now.toIso8601String();
+        keyData['expires_at'] = expires.toIso8601String();
+      }
+
+      final expiryError = _checkExpiry(keyData);
+
+      if (expiryError != null) {
+        return expiryError;
+      }
+
+      keyData['device_id'] = deviceId;
+
+      keys[key] = keyData;
       gistData['keys'] = keys;
+
       await _updateGist(gistData);
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_savedKeyPref, key);
+
       return const LicenseResult(success: true);
+
     } catch (_) {
-      return const LicenseResult(success: false, message: 'خطأ في الاتصال، حاول مرة أخرى', isConnectionError: true);
+      return const LicenseResult(
+        success: false,
+        message: "خطأ في الاتصال",
+        isConnectionError: true,
+      );
     }
   }
 
   static Future<LicenseResult> validateSavedKey() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+
       final savedKey = prefs.getString(_savedKeyPref);
-      if (savedKey == null) return const LicenseResult(success: false);
+
+      if (savedKey == null) {
+        return const LicenseResult(success: false);
+      }
 
       final deviceId = await _getDeviceId();
+
       final gistData = await _fetchGist();
       final keys = gistData['keys'] as Map<String, dynamic>? ?? {};
-      if (!keys.containsKey(savedKey)) return const LicenseResult(success: false);
 
-      final keyData = Map<String, dynamic>.from(keys[savedKey] as Map);
-      if (keyData['active'] != true) return const LicenseResult(success: false, message: '🚫 تم إيقاف هذا المفتاح');
-      final expiryError = _checkExpiry(keyData);
-      if (expiryError != null) return expiryError;
-      if (keyData['device_id'] != deviceId) return const LicenseResult(success: false);
+      if (!keys.containsKey(savedKey)) {
+        return const LicenseResult(success: false);
+      }
+
+      final keyData = Map<String, dynamic>.from(keys[savedKey]);
+
+      if (keyData['active'] != true) {
+        return const LicenseResult(
+          success: false,
+          message: "🚫 تم إيقاف المفتاح",
+        );
+      }
+
+      final expiry = _checkExpiry(keyData);
+
+      if (expiry != null) {
+        return expiry;
+      }
+
+      if (keyData['device_id'] != deviceId) {
+        return const LicenseResult(success: false);
+      }
+
       return const LicenseResult(success: true);
+
     } catch (_) {
-      return const LicenseResult(success: false, isConnectionError: true);
+      return const LicenseResult(
+        success: false,
+        isConnectionError: true,
+      );
     }
   }
 
@@ -134,5 +252,7 @@ class LicenseService {
     return prefs.getString(_savedKeyPref);
   }
 
-  static Future<String?> getRegisteredKey() async => getSavedKey();
+  static Future<String?> getRegisteredKey() async {
+    return getSavedKey();
+  }
 }
