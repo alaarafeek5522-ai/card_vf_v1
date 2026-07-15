@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:async';
 
 import '../models/card_model.dart';
 import '../theme/app_theme.dart';
@@ -20,11 +22,45 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _search = '';
   bool _isLoading = true;
+  bool _isOffline = false;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    _startConnectivityMonitoring();
+  }
+
+  Future<void> _startConnectivityMonitoring() async {
+    await _checkConnectivity();
+
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen((results) {
+      if (!mounted) return;
+
+      setState(() {
+        _isOffline =
+            results.isEmpty || results.contains(ConnectivityResult.none);
+      });
+    });
+  }
+
+  Future<void> _checkConnectivity() async {
+    final results = await Connectivity().checkConnectivity();
+
+    if (!mounted) return;
+
+    setState(() {
+      _isOffline =
+          results.isEmpty || results.contains(ConnectivityResult.none);
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -116,16 +152,85 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
-              IconButton(
-                tooltip: 'التواصل مع المطور',
-                icon: const Icon(
-                  Icons.chat_rounded,
-                  color: Color(0xFF25D366),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: 10),
+                child: TextButton.icon(
+                  onPressed: _contactDeveloper,
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color(0xFF25D366),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 9,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.support_agent_rounded,
+                    size: 20,
+                  ),
+                  label: Text(
+                    'الدعم',
+                    style: GoogleFonts.cairo(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                onPressed: _contactDeveloper,
               ),
             ],
           ),
+
+          if (_isOffline)
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: Colors.red.withOpacity(0.25),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.wifi_off_rounded,
+                      color: Colors.red,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'لا يوجد اتصال بالإنترنت',
+                        style: GoogleFonts.cairo(
+                          color: Colors.red.shade700,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: _checkConnectivity,
+                      child: Text(
+                        'إعادة المحاولة',
+                        style: GoogleFonts.cairo(
+                          color: AppTheme.redVF,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
           SliverToBoxAdapter(
             child: Padding(
@@ -629,34 +734,39 @@ class _SlideRoute extends PageRouteBuilder {
             secondaryAnimation,
             child,
           ) {
-            final slide = Tween<Offset>(
-              begin: const Offset(1.0, 0.0),
-              end: Offset.zero,
-            ).animate(
-              CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutCubic,
-              ),
+            final curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+              reverseCurve: Curves.easeInOutCubic,
             );
+
+            final slide = Tween<Offset>(
+              begin: const Offset(0.12, 0.0),
+              end: Offset.zero,
+            ).animate(curvedAnimation);
 
             final fade = Tween<double>(
               begin: 0.0,
               end: 1.0,
-            ).animate(
-              CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeIn,
-              ),
-            );
+            ).animate(curvedAnimation);
 
-            return SlideTransition(
-              position: slide,
-              child: FadeTransition(
-                opacity: fade,
-                child: child,
+            final scale = Tween<double>(
+              begin: 0.985,
+              end: 1.0,
+            ).animate(curvedAnimation);
+
+            return FadeTransition(
+              opacity: fade,
+              child: SlideTransition(
+                position: slide,
+                child: ScaleTransition(
+                  scale: scale,
+                  child: child,
+                ),
               ),
             );
           },
-          transitionDuration: const Duration(milliseconds: 350),
+          transitionDuration: const Duration(milliseconds: 360),
+          reverseTransitionDuration: const Duration(milliseconds: 300),
         );
 }
