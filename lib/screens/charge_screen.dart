@@ -177,13 +177,34 @@ class _ChargeScreenState extends State<ChargeScreen>
     }
 
     try {
+      // 1. جلب بيانات الـ seamless (بيانات خط فودافون الحالي على الجهاز)
+      final seamless = await VodafoneService.getSeamlessData();
+      final seamlessToken = seamless['token'] ?? seamless['seamlessToken'];
+      final senderMsisdn = (seamless['msisdn'] ?? '').toString();
+
+      if (seamlessToken == null || senderMsisdn.isEmpty) {
+        throw Exception('تعذر جلب بيانات خط فودافون، تأكد من اتصالك بشبكة فودافون');
+      }
+
+      // 2. تحويل الـ seamless token إلى access token
+      final accessToken = await VodafoneService.getAccessToken(seamlessToken);
+      if (accessToken == null) {
+        throw Exception('فشل التحقق من الحساب، حاول مرة أخرى');
+      }
+
+      // 3. تنفيذ عملية الشحن الفعلية على سيرفرات فودافون
       final result = await VodafoneService.chargeCard(
-        phone: receiver,
         productId: widget.card.productId,
-        netCharge: widget.card.netCharge,
+        receiver: receiver,
+        pin: pin,
+        senderMsisdn: senderMsisdn,
+        accessToken: accessToken,
       );
 
-      final ok = result.success;
+      final ok = (result['success'] == true) ||
+          (result['status']?.toString().toLowerCase() == 'success') ||
+          (result['state']?.toString().toLowerCase() == 'completed');
+      final resultMessage = (result['message'] ?? result['error']?['message'])?.toString();
 
       if (ok) {
         HapticFeedback.heavyImpact();
@@ -200,7 +221,7 @@ class _ChargeScreenState extends State<ChargeScreen>
 
       setState(() {
         _success = ok;
-        _resultMsg = ok ? '✅ تم الشحن بنجاح!' : (result.message ?? '❌ فشل الشحن');
+        _resultMsg = ok ? '✅ تم الشحن بنجاح!' : (resultMessage ?? '❌ فشل الشحن');
         if (ok) _lastReceiver = receiver;
       });
     } catch (e) {
@@ -208,7 +229,7 @@ class _ChargeScreenState extends State<ChargeScreen>
       await HistoryService.addRecord(
         cardName: widget.card.name, netCharge: widget.card.netCharge,
         phone: receiver, success: false);
-      setState(() { _success = false; _resultMsg = '❌ ${e.toString()}'; });
+      setState(() { _success = false; _resultMsg = '❌ ${e.toString().replaceAll("Exception: ", "")}'; });
     } finally {
       setState(() => _loading = false);
     }
