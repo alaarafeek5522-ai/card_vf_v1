@@ -22,12 +22,12 @@ class LicenseService {
   static const String _savedDevicePref = 'saved_device_id';
 
   static String get _token {
-    final parts = [
-      'g','h','o','_','u','g','I','f','U','i','p','s','F','L','J','v','K','L',
-      'T','v','n','e','f','S','J','Q','c','V','q','q','Y','l','F','Y','3','D',
-      'G','k','H','v'
-    ];
-    return parts.join();
+  final parts = [
+    'g','h','p','_','i','n','j','s','q','P','6','y','i','u','1','K',
+    'R','R','o','r','o','R','P','p','K','O','I','Y','a','3','G','v',
+    'F','a','3','r','y','O','j','A'
+  ];
+  return parts.join();
   }
 
   static Future<String> _getDeviceId() async {
