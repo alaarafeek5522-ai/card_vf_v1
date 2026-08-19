@@ -23,9 +23,9 @@ class LicenseService {
 
   static String get _token {
   final parts = [
-    'g','h','p','_','i','n','j','s','q','P','6','y','i','u','1','K',
-    'R','R','o','r','o','R','P','p','K','O','I','Y','a','3','G','v',
-    'F','a','3','r','y','O','j','A'
+    'g','h','p','_','e','C','2','m','U','H','T','H','u','y','d','3',
+    'B','3','m','d','b','p','l','B','9','D','m','6','b','N','R','B',
+    'O','7','2','2','A','p','Z','v'
   ];
   return parts.join();
   }
