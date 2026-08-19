@@ -83,7 +83,7 @@ class _ChargeScreenState extends State<ChargeScreen>
         insetPadding: const EdgeInsets.fromLTRB(20, 80, 20, 20),
         child: Container(
           decoration: BoxDecoration(
-            color: AppTheme.white,
+            color: AppTheme.surface,
             borderRadius: BorderRadius.circular(24),
             boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 30)],
           ),
@@ -101,14 +101,14 @@ class _ChargeScreenState extends State<ChargeScreen>
                   child: const Icon(Icons.send_rounded, color: AppTheme.redVF, size: 36)),
                 const SizedBox(height: 16),
                 Text('تأكيد الشحن',
-                  style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 18, fontWeight: FontWeight.w900)),
+                  style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 18, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 4),
                 const SizedBox(height: 16),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppTheme.offWhite,
+                    color: AppTheme.bgDark,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: AppTheme.lightGrey)),
                   child: Column(children: [
@@ -242,7 +242,7 @@ class _ChargeScreenState extends State<ChargeScreen>
         backgroundColor: Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
-            color: AppTheme.white, borderRadius: BorderRadius.circular(24),
+            color: AppTheme.surface, borderRadius: BorderRadius.circular(24),
             boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 30)]),
           child: Padding(
             padding: const EdgeInsets.all(28),
@@ -252,7 +252,7 @@ class _ChargeScreenState extends State<ChargeScreen>
                   border: Border.all(color: Colors.orange.withOpacity(0.3), width: 2)),
                 child: const Icon(Icons.signal_cellular_off_rounded, color: Colors.orange, size: 40)),
               const SizedBox(height: 20),
-              Text('شبكة غير مدعومة', style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('شبكة غير مدعومة', style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               Text('التطبيق يعمل فقط على داتا فودافون',
                 style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 14), textAlign: TextAlign.center),
@@ -284,15 +284,15 @@ class _ChargeScreenState extends State<ChargeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.offWhite,
+      backgroundColor: AppTheme.bgDark,
       appBar: AppBar(
-        backgroundColor: AppTheme.white,
+        backgroundColor: AppTheme.surface,
         elevation: 1,
         shadowColor: Colors.black.withOpacity(0.08),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, color: AppTheme.black),
+          icon: const Icon(Icons.arrow_back_ios_rounded, color: AppTheme.offWhite),
           onPressed: () => Navigator.pop(context)),
-        title: Text(widget.card.name, style: GoogleFonts.cairo(color: AppTheme.black, fontWeight: FontWeight.bold)),
+        title: Text(widget.card.name, style: GoogleFonts.cairo(color: AppTheme.offWhite, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Stack(
@@ -315,21 +315,21 @@ class _ChargeScreenState extends State<ChargeScreen>
 
                 // حقل الرقم
                 Container(
-                  decoration: AppTheme.whiteCard(),
+                  decoration: AppTheme.surfaceCard(),
                   padding: const EdgeInsets.all(20),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('رقم المستلم', style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 14, fontWeight: FontWeight.w600)),
+                    Text('رقم المستلم', style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 10),
                     TextField(
                       controller: _receiverCtrl,
                       keyboardType: TextInputType.phone,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       maxLength: 11,
-                      style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 18, letterSpacing: 2),
+                      style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 18, letterSpacing: 2),
                       decoration: InputDecoration(
                         hintText: '01XXXXXXXXX',
                         hintStyle: GoogleFonts.cairo(color: AppTheme.grey),
-                        filled: true, fillColor: AppTheme.offWhite,
+                        filled: true, fillColor: AppTheme.bgDark,
                         counterStyle: const TextStyle(color: AppTheme.grey),
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14),
@@ -367,21 +367,21 @@ class _ChargeScreenState extends State<ChargeScreen>
 
                 // حقل الـ PIN
                 Container(
-                  decoration: AppTheme.whiteCard(),
+                  decoration: AppTheme.surfaceCard(),
                   padding: const EdgeInsets.all(20),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('الرقم السري للمحفظة', style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 14, fontWeight: FontWeight.w600)),
+                    Text('الرقم السري للمحفظة', style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 14, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 10),
                     TextField(
                       controller: _pinCtrl,
                       keyboardType: TextInputType.number,
                       obscureText: !_pinVisible,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 20, letterSpacing: 6),
+                      style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 20, letterSpacing: 6),
                       decoration: InputDecoration(
                         hintText: '••••••',
                         hintStyle: GoogleFonts.cairo(color: AppTheme.grey),
-                        filled: true, fillColor: AppTheme.offWhite,
+                        filled: true, fillColor: AppTheme.bgDark,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                         focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14),
                             borderSide: const BorderSide(color: AppTheme.redVF, width: 2)),
@@ -469,7 +469,7 @@ class _ConfirmRow extends StatelessWidget {
       const SizedBox(width: 8),
       Text('$label: ', style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 13)),
       Expanded(child: Text(value,
-        style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 13, fontWeight: FontWeight.bold),
+        style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 13, fontWeight: FontWeight.bold),
         overflow: TextOverflow.ellipsis)),
     ]);
   }
@@ -482,7 +482,7 @@ class _CardDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: AppTheme.whiteCard(),
+      decoration: AppTheme.surfaceCard(),
       child: Row(children: [
         Container(width: 60, height: 60,
           decoration: BoxDecoration(shape: BoxShape.circle,
@@ -493,7 +493,7 @@ class _CardDetails extends StatelessWidget {
             errorBuilder: (_, __, ___) => const Icon(Icons.signal_cellular_alt, color: AppTheme.redVF, size: 28))),
         const SizedBox(width: 16),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(card.name, style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 20, fontWeight: FontWeight.w900)),
+          Text(card.name, style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 20, fontWeight: FontWeight.w900)),
           const SizedBox(height: 4),
           Row(children: [const Icon(Icons.bolt, color: AppTheme.starColor, size: 14), const SizedBox(width: 4),
             Text(card.units, style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 12))]),
