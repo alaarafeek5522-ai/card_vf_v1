@@ -117,13 +117,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.offWhite,
+      backgroundColor: AppTheme.bgDark,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 160,
             pinned: true,
-            backgroundColor: AppTheme.white,
+            backgroundColor: AppTheme.surface,
             surfaceTintColor: Colors.transparent,
             elevation: 1,
             shadowColor: Colors.black.withOpacity(0.08),
@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 tooltip: 'السجل',
                 icon: const Icon(
                   Icons.history_rounded,
-                  color: AppTheme.black,
+                  color: AppTheme.offWhite,
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -240,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   setState(() => _search = value);
                 },
                 style: GoogleFonts.cairo(
-                  color: AppTheme.black,
+                  color: AppTheme.offWhite,
                 ),
                 decoration: InputDecoration(
                   hintText: 'ابحث عن باقة...',
@@ -252,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: AppTheme.grey,
                   ),
                   filled: true,
-                  fillColor: AppTheme.white,
+                  fillColor: AppTheme.surface,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide.none,
@@ -295,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     'الباقات المتاحة',
                     style: GoogleFonts.cairo(
-                      color: AppTheme.black,
+                      color: AppTheme.offWhite,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -398,32 +398,13 @@ class _ShimmerTitleState extends State<_ShimmerTitle>
       animation: _controller,
       builder: (context, child) {
         return ShaderMask(
-          shaderCallback: (bounds) {
-            return LinearGradient(
-              colors: const [
-                AppTheme.redVF,
-                Color(0xFFFF4444),
-                AppTheme.darkRed,
-                Color(0xFFFF4444),
-                AppTheme.redVF,
-              ],
-              stops: [
-                0.0,
-                (_controller.value - 0.1).clamp(0.0, 1.0),
-                _controller.value.clamp(0.0, 1.0),
-                (_controller.value + 0.1).clamp(0.0, 1.0),
-                1.0,
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ).createShader(bounds);
-          },
+          shaderCallback: (bounds) => AppTheme.shimmerGold(t: _controller.value).createShader(bounds),
           child: Text(
             '𝘾𝙖𝙧𝙙 𝙑𝙤𝙙𝙖𝙛𝙤𝙣𝙚',
             style: GoogleFonts.cairo(
               fontSize: 20,
               fontWeight: FontWeight.w900,
-              color: AppTheme.redVF,
+              color: Colors.white,
             ),
           ),
         );
@@ -438,7 +419,7 @@ class _AppBarBg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.white,
+      color: AppTheme.surface,
       child: Stack(
         children: [
           Positioned(
@@ -503,7 +484,7 @@ class _CardTile extends StatelessWidget {
         );
       },
       child: Container(
-        decoration: AppTheme.whiteCard(),
+        decoration: AppTheme.surfaceCard(),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
@@ -546,7 +527,7 @@ class _CardTile extends StatelessWidget {
                   Text(
                     card.name,
                     style: GoogleFonts.cairo(
-                      color: AppTheme.black,
+                      color: AppTheme.offWhite,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
