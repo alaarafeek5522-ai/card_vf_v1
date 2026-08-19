@@ -26,11 +26,11 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.light,
     ));
     _shimmerCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: const Duration(milliseconds: 2200),
     )..repeat();
     Future.delayed(const Duration(milliseconds: 1200), _startChecks);
   }
@@ -53,10 +53,10 @@ class _SplashScreenState extends State<SplashScreen>
     if (config['stopped'] == true) {
       _showDialog(
         icon: Icons.block_rounded,
-        iconColor: Colors.red,
+        iconColor: AppTheme.redVF,
         title: 'التطبيق متوقف',
         message: config['stopped_message'] ?? 'التطبيق متوقف مؤقتاً',
-        actions: [_DialogBtn(label: 'خروج', color: Colors.red, onTap: () => SystemNavigator.pop())],
+        actions: [_DialogBtn(label: 'خروج', color: AppTheme.redVF, onTap: () => SystemNavigator.pop())],
       );
       return;
     }
@@ -66,13 +66,13 @@ class _SplashScreenState extends State<SplashScreen>
     if (_isVersionLower(info.version, minVersion)) {
       _showDialog(
         icon: Icons.system_update_rounded,
-        iconColor: AppTheme.starColor,
+        iconColor: AppTheme.gold,
         title: 'تحديث جديد',
         message: config['update_message'] ?? 'يوجد تحديث جديد',
         actions: [
           _DialogBtn(
             label: '⬇️ تحديث الآن',
-            color: AppTheme.starColor,
+            color: AppTheme.gold,
             onTap: () async {
               final url = config['update_url'] ?? '';
               if (url.isNotEmpty) await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
@@ -100,12 +100,12 @@ class _SplashScreenState extends State<SplashScreen>
     } else if (licenseResult.isConnectionError) {
       _showDialog(
         icon: Icons.wifi_off_rounded,
-        iconColor: Colors.orange,
+        iconColor: AppTheme.gold,
         title: 'خطأ في الاتصال',
         message: 'تعذر الاتصال بالسيرفر\nتأكد من اتصالك بالإنترنت',
         actions: [
-          _DialogBtn(label: 'إعادة المحاولة', color: Colors.orange, onTap: () { Navigator.pop(context); _startChecks(); }),
-          _DialogBtn(label: 'خروج', color: AppTheme.grey, onTap: () => SystemNavigator.pop()),
+          _DialogBtn(label: 'إعادة المحاولة', color: AppTheme.gold, onTap: () { Navigator.pop(context); _startChecks(); }),
+          _DialogBtn(label: 'خروج', color: AppTheme.darkGrey, onTap: () => SystemNavigator.pop()),
         ],
       );
     } else {
@@ -130,11 +130,7 @@ class _SplashScreenState extends State<SplashScreen>
       builder: (_) => Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          decoration: BoxDecoration(
-            color: AppTheme.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 30)],
-          ),
+          decoration: AppTheme.goldGlowCard(radius: 26),
           child: Padding(
             padding: const EdgeInsets.all(28),
             child: Column(
@@ -144,13 +140,13 @@ class _SplashScreenState extends State<SplashScreen>
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: iconColor.withOpacity(0.1),
-                    border: Border.all(color: iconColor.withOpacity(0.3), width: 2),
+                    color: iconColor.withOpacity(0.12),
+                    border: Border.all(color: iconColor.withOpacity(0.4), width: 2),
                   ),
                   child: Icon(icon, color: iconColor, size: 44),
                 ),
                 const SizedBox(height: 20),
-                Text(title, style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 20, fontWeight: FontWeight.w900)),
+                Text(title, style: GoogleFonts.cairo(color: AppTheme.offWhite, fontSize: 20, fontWeight: FontWeight.w900)),
                 const SizedBox(height: 8),
                 Text(message, style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 14), textAlign: TextAlign.center),
                 const SizedBox(height: 24),
@@ -169,96 +165,91 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.white,
-      body: Stack(
-        children: [
-          // دوائر خلفية
-          Positioned(top: -100, right: -100,
-            child: Container(width: 350, height: 350,
-              decoration: BoxDecoration(shape: BoxShape.circle,
-                color: AppTheme.redVF.withOpacity(0.06)))),
-          Positioned(bottom: -80, left: -80,
-            child: Container(width: 280, height: 280,
-              decoration: BoxDecoration(shape: BoxShape.circle,
-                color: AppTheme.redVF.withOpacity(0.04)))),
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
+        child: Stack(
+          children: [
+            // توهجات خلفية فخمة
+            Positioned(top: -120, right: -100,
+              child: Container(width: 380, height: 380,
+                decoration: BoxDecoration(shape: BoxShape.circle,
+                  gradient: RadialGradient(colors: [AppTheme.redVF.withOpacity(0.20), Colors.transparent])))),
+            Positioned(bottom: -100, left: -100,
+              child: Container(width: 320, height: 320,
+                decoration: BoxDecoration(shape: BoxShape.circle,
+                  gradient: RadialGradient(colors: [AppTheme.gold.withOpacity(0.12), Colors.transparent])))),
 
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // لوجو فخم
-                Container(
-                  width: 160, height: 160,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppTheme.white,
-                    boxShadow: [
-                      BoxShadow(color: AppTheme.redVF.withOpacity(0.2), blurRadius: 40, spreadRadius: 5),
-                      BoxShadow(color: AppTheme.redVF.withOpacity(0.1), blurRadius: 80, spreadRadius: 15),
-                      BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 20, offset: const Offset(0, 8)),
-                    ],
-                    border: Border.all(color: AppTheme.redVF.withOpacity(0.15), width: 2),
-                  ),
-                  padding: const EdgeInsets.all(28),
-                  child: Image.asset('assets/images/app_icon.png',
-                    errorBuilder: (_, __, ___) => const Icon(Icons.signal_cellular_alt, color: AppTheme.redVF, size: 70)),
-                )
-                .animate(onPlay: (c) => c.repeat(reverse: true))
-                .scale(begin: const Offset(1.0, 1.0), end: const Offset(1.04, 1.04), duration: 1500.ms),
-
-                const SizedBox(height: 48),
-
-                // شيمر على الاسم
-                AnimatedBuilder(
-                  animation: _shimmerCtrl,
-                  builder: (_, __) => ShaderMask(
-                    shaderCallback: (bounds) => LinearGradient(
-                      colors: const [AppTheme.redVF, Color(0xFFFF6B6B), AppTheme.redVF, AppTheme.darkRed, AppTheme.redVF],
-                      stops: [
-                        0.0,
-                        (_shimmerCtrl.value - 0.15).clamp(0.0, 1.0),
-                        _shimmerCtrl.value.clamp(0.0, 1.0),
-                        (_shimmerCtrl.value + 0.15).clamp(0.0, 1.0),
-                        1.0,
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // لوجو فخم بإطار ذهبي متوهج
+                  Container(
+                    width: 168, height: 168,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppTheme.surface,
+                      boxShadow: [
+                        BoxShadow(color: AppTheme.gold.withOpacity(0.35), blurRadius: 46, spreadRadius: 4),
+                        BoxShadow(color: AppTheme.redVF.withOpacity(0.18), blurRadius: 90, spreadRadius: 18),
+                        BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 24, offset: const Offset(0, 12)),
                       ],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ).createShader(bounds),
-                    child: Text('𝘾𝙖𝙧𝙙 𝙑𝙤𝙙𝙖𝙛𝙤𝙣𝙚',
-                      style: GoogleFonts.cairo(fontSize: 32, fontWeight: FontWeight.w900, color: AppTheme.redVF)),
-                  ),
-                ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.2),
-
-                const SizedBox(height: 8),
-
-                Text('Team Ahmed',
-                  style: GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w600,
-                    color: AppTheme.grey, letterSpacing: 3),
-                ).animate().fadeIn(delay: 200.ms),
-
-                const SizedBox(height: 80),
-
-                if (_status.isNotEmpty) ...[
-                  Text(_status,
-                    style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 13),
-                  ).animate().fadeIn(),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: 180,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: LinearProgressIndicator(
-                        backgroundColor: AppTheme.lightGrey,
-                        valueColor: const AlwaysStoppedAnimation(AppTheme.redVF),
-                        minHeight: 3,
-                      ),
+                      border: const GradientBoxBorder(gradient: AppTheme.goldGradient, width: 2.2),
                     ),
-                  ).animate().fadeIn(),
+                    padding: const EdgeInsets.all(28),
+                    child: Image.asset('assets/images/app_icon.png',
+                      errorBuilder: (_, __, ___) => const Icon(Icons.signal_cellular_alt, color: AppTheme.gold, size: 70)),
+                  )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .scale(begin: const Offset(1.0, 1.0), end: const Offset(1.04, 1.04), duration: 1500.ms),
+
+                  const SizedBox(height: 48),
+
+                  // شيمر ذهبي على الاسم
+                  AnimatedBuilder(
+                    animation: _shimmerCtrl,
+                    builder: (_, __) => ShaderMask(
+                      shaderCallback: (bounds) => AppTheme.shimmerGold(t: _shimmerCtrl.value).createShader(bounds),
+                      child: Text('𝘾𝙖𝙧𝙙 𝙑𝙤𝙙𝙖𝙛𝙤𝙣𝙚',
+                        style: GoogleFonts.cairo(fontSize: 32, fontWeight: FontWeight.w900, color: AppTheme.gold,
+                          letterSpacing: 1)),
+                    ),
+                  ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.2),
+
+                  const SizedBox(height: 10),
+
+                  ShaderMask(
+                    shaderCallback: (bounds) => AppTheme.goldGradient.createShader(bounds),
+                    child: Text('Team Ahmed',
+                      style: GoogleFonts.cairo(fontSize: 13, fontWeight: FontWeight.w700,
+                        color: Colors.white, letterSpacing: 4),
+                    ),
+                  ).animate().fadeIn(delay: 200.ms),
+
+                  const SizedBox(height: 80),
+
+                  if (_status.isNotEmpty) ...[
+                    Text(_status,
+                      style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 13),
+                    ).animate().fadeIn(),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: 180,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: LinearProgressIndicator(
+                          backgroundColor: AppTheme.lightGrey,
+                          valueColor: const AlwaysStoppedAnimation(AppTheme.gold),
+                          minHeight: 3,
+                        ),
+                      ),
+                    ).animate().fadeIn(),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -279,9 +270,10 @@ class _DialogBtn extends StatelessWidget {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: color,
+            foregroundColor: AppTheme.black,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
           onPressed: onTap,
-          child: Text(label, style: GoogleFonts.cairo(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+          child: Text(label, style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 16)),
         ),
       ),
     );
