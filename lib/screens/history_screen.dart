@@ -41,13 +41,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.offWhite,
+      backgroundColor: AppTheme.bgDark,
       appBar: AppBar(
-        backgroundColor: AppTheme.white,
+        backgroundColor: AppTheme.surface,
         elevation: 0,
-        title: const Text('سجل العمليات', style: TextStyle(color: AppTheme.black, fontWeight: FontWeight.bold)),
+        title: const Text('سجل العمليات', style: TextStyle(color: AppTheme.offWhite, fontWeight: FontWeight.bold)),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, color: AppTheme.black),
+          icon: const Icon(Icons.arrow_back_ios_rounded, color: AppTheme.offWhite),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -57,8 +57,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
               onPressed: () => showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
-                  backgroundColor: AppTheme.white,
-                  title: const Text('مسح السجل', style: TextStyle(color: AppTheme.black)),
+                  backgroundColor: AppTheme.surface,
+                  title: const Text('مسح السجل', style: TextStyle(color: AppTheme.offWhite)),
                   content: const Text('هل تريد مسح كل السجل؟', style: TextStyle(color: AppTheme.grey)),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(context), child: const Text('إلغاء', style: TextStyle(color: AppTheme.grey))),
@@ -93,7 +93,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       margin: const EdgeInsets.only(bottom: 10),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppTheme.white,
+                        color: AppTheme.surface,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: statusColor.withOpacity(0.2),
@@ -118,7 +118,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(item['card'] ?? '', style: const TextStyle(color: AppTheme.black, fontWeight: FontWeight.bold)),
+                                Text(item['card'] ?? '', style: const TextStyle(color: AppTheme.offWhite, fontWeight: FontWeight.bold)),
                                 Text(item['phone'] ?? '', style: const TextStyle(color: AppTheme.grey, fontSize: 13)),
                                 Text(_formatDate(item['date'] ?? ''), style: const TextStyle(color: AppTheme.grey, fontSize: 11)),
                               ],
