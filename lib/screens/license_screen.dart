@@ -48,18 +48,19 @@ class _LicenseScreenState extends State<LicenseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.white,
-      body: Stack(
+      body: Container(
+      decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
+      child: Stack(
         children: [
           // خلفية
           Positioned(top: -120, right: -80,
             child: Container(width: 320, height: 320,
               decoration: BoxDecoration(shape: BoxShape.circle,
-                color: AppTheme.redVF.withOpacity(0.06)))),
+                gradient: RadialGradient(colors: [AppTheme.redVF.withOpacity(0.18), Colors.transparent])))),
           Positioned(bottom: -100, left: -60,
             child: Container(width: 280, height: 280,
               decoration: BoxDecoration(shape: BoxShape.circle,
-                color: AppTheme.redVF.withOpacity(0.04)))),
+                gradient: RadialGradient(colors: [AppTheme.gold.withOpacity(0.12), Colors.transparent])))),
 
           SafeArea(
             child: SingleChildScrollView(
@@ -74,35 +75,38 @@ class _LicenseScreenState extends State<LicenseScreen> {
                     width: 120, height: 120,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppTheme.white,
+                      color: AppTheme.surface,
                       boxShadow: [
-                        BoxShadow(color: AppTheme.redVF.withOpacity(0.2), blurRadius: 30, spreadRadius: 4),
-                        BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 15, offset: const Offset(0, 6)),
+                        BoxShadow(color: AppTheme.gold.withOpacity(0.3), blurRadius: 34, spreadRadius: 3),
+                        BoxShadow(color: Colors.black.withOpacity(0.45), blurRadius: 18, offset: const Offset(0, 8)),
                       ],
-                      border: Border.all(color: AppTheme.redVF.withOpacity(0.15), width: 2),
+                      border: const GradientBoxBorder(gradient: AppTheme.goldGradient, width: 2),
                     ),
                     padding: const EdgeInsets.all(22),
                     child: Image.asset('assets/images/app_icon.png',
-                      errorBuilder: (_, __, ___) => const Icon(Icons.vpn_key_rounded, color: AppTheme.redVF, size: 50)),
+                      errorBuilder: (_, __, ___) => const Icon(Icons.vpn_key_rounded, color: AppTheme.gold, size: 50)),
                   ).animate().fadeIn(duration: 500.ms).scale(begin: const Offset(0.8, 0.8)),
 
                   const SizedBox(height: 32),
 
-                  Text('𝘾𝙖𝙧𝙙 𝙑𝙤𝙙𝙖𝙛𝙤𝙣𝙚',
-                    style: GoogleFonts.cairo(fontSize: 26, fontWeight: FontWeight.w900, color: AppTheme.redVF),
+                  ShaderMask(
+                    shaderCallback: (b) => AppTheme.goldGradient.createShader(b),
+                    child: Text('𝘾𝙖𝙧𝙙 𝙑𝙤𝙙𝙖𝙛𝙤𝙣𝙚',
+                      style: GoogleFonts.cairo(fontSize: 26, fontWeight: FontWeight.w900, color: Colors.white),
+                    ),
                   ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.2),
 
                   const SizedBox(height: 6),
 
                   Text('Team Ahmed',
-                    style: GoogleFonts.cairo(fontSize: 13, color: AppTheme.grey, letterSpacing: 2),
+                    style: GoogleFonts.cairo(fontSize: 13, color: AppTheme.grey, letterSpacing: 3, fontWeight: FontWeight.w600),
                   ).animate().fadeIn(delay: 150.ms),
 
                   const SizedBox(height: 48),
 
                   // كارت التفعيل
                   Container(
-                    decoration: AppTheme.whiteCard(),
+                    decoration: AppTheme.surfaceCard(),
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Column(
@@ -112,13 +116,13 @@ class _LicenseScreenState extends State<LicenseScreen> {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: AppTheme.redVF.withOpacity(0.1),
+                                color: AppTheme.gold.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(12)),
-                              child: const Icon(Icons.vpn_key_rounded, color: AppTheme.redVF, size: 22)),
+                              child: const Icon(Icons.vpn_key_rounded, color: AppTheme.gold, size: 22)),
                             const SizedBox(width: 12),
                             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                               Text('تفعيل التطبيق',
-                                style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.w900, color: AppTheme.black)),
+                                style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.w900, color: AppTheme.offWhite)),
                               Text('أدخل مفتاح التفعيل الخاص بك',
                                 style: GoogleFonts.cairo(fontSize: 12, color: AppTheme.grey)),
                             ]),
@@ -134,16 +138,16 @@ class _LicenseScreenState extends State<LicenseScreen> {
                             obscureText: !_keyVisible,
                             style: GoogleFonts.cairo(
                               fontSize: 18, fontWeight: FontWeight.bold,
-                              color: AppTheme.black, letterSpacing: 3),
+                              color: AppTheme.offWhite, letterSpacing: 3),
                             decoration: InputDecoration(
                               hintText: 'XXXX-XXXX-XXXX',
                               hintStyle: GoogleFonts.cairo(color: AppTheme.grey, letterSpacing: 3),
                               filled: true,
-                              fillColor: AppTheme.offWhite,
+                              fillColor: AppTheme.bgDark,
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                               focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14),
-                                  borderSide: const BorderSide(color: AppTheme.redVF, width: 2)),
-                              prefixIcon: const Icon(Icons.key_rounded, color: AppTheme.redVF),
+                                  borderSide: const BorderSide(color: AppTheme.gold, width: 2)),
+                              prefixIcon: const Icon(Icons.key_rounded, color: AppTheme.gold),
                               suffixIcon: IconButton(
                                 icon: Icon(_keyVisible ? Icons.visibility_off : Icons.visibility, color: AppTheme.grey),
                                 onPressed: () => setState(() => _keyVisible = !_keyVisible),
@@ -186,20 +190,18 @@ class _LicenseScreenState extends State<LicenseScreen> {
                                 decoration: BoxDecoration(
                                   gradient: _loading
                                       ? const LinearGradient(colors: [Colors.grey, Colors.grey])
-                                      : const LinearGradient(
-                                          colors: [AppTheme.redVF, AppTheme.darkRed],
-                                          begin: Alignment.topLeft, end: Alignment.bottomRight),
+                                      : AppTheme.goldGradient,
                                   borderRadius: BorderRadius.circular(14),
-                                  boxShadow: [BoxShadow(color: AppTheme.redVF.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+                                  boxShadow: [BoxShadow(color: AppTheme.gold.withOpacity(0.35), blurRadius: 14, offset: const Offset(0, 4))],
                                 ),
                                 child: Center(
                                   child: _loading
                                       ? const SizedBox(width: 24, height: 24,
-                                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
+                                          child: CircularProgressIndicator(color: AppTheme.black, strokeWidth: 2.5))
                                       : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                          const Icon(Icons.rocket_launch_rounded, color: Colors.white, size: 20),
+                                          const Icon(Icons.rocket_launch_rounded, color: AppTheme.black, size: 20),
                                           const SizedBox(width: 10),
-                                          Text('تفعيل', style: GoogleFonts.cairo(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
+                                          Text('تفعيل', style: GoogleFonts.cairo(color: AppTheme.black, fontSize: 17, fontWeight: FontWeight.bold)),
                                         ]),
                                 ),
                               ),
@@ -222,15 +224,15 @@ class _LicenseScreenState extends State<LicenseScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                       decoration: BoxDecoration(
-                        color: AppTheme.offWhite,
+                        color: AppTheme.surface,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppTheme.lightGrey),
+                        border: Border.all(color: AppTheme.gold.withOpacity(0.2)),
                       ),
                       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                         const Icon(Icons.chat_rounded, color: Color(0xFF25D366), size: 20),
                         const SizedBox(width: 8),
                         Text('التواصل مع المطور',
-                          style: GoogleFonts.cairo(color: AppTheme.darkGrey, fontSize: 13, fontWeight: FontWeight.bold)),
+                          style: GoogleFonts.cairo(color: AppTheme.grey, fontSize: 13, fontWeight: FontWeight.bold)),
                       ]),
                     ),
                   ).animate().fadeIn(delay: 300.ms),
@@ -239,6 +241,7 @@ class _LicenseScreenState extends State<LicenseScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }
